@@ -1,0 +1,41 @@
+#!/bin/bash
+
+# Obtain the cgroup of the current shell
+cgroup=$(cat /proc/self/cgroup | cut -d: -f2)
+
+# Function to show information of parent processes recursively
+mostrar_pares() {
+  pid=$1
+
+  # Show information of the current PID
+  echo "PID: $pid"
+  echo "PPID: $(ps -o ppid= -p $pid)"
+  echo "Comanda: $(ps -o command= -p $pid)"
+
+  # Get the parent PID
+  parent_pid=$(ps -o ppid= -p $pid)
+  parent_pid=$(echo "$parent_pid" | tr -d '[[:space:]]')
+
+  if [[ -z "$parent_pid" || 0 -eq $parent_pid ]]
+  then
+	return
+  fi
+
+  # If the parent is not in the same cgroup, exit recursion
+  if [[ ! $(cat /proc/$parent_pid/cgroup | cut -d: -f2) == "$cgroup" ]]
+  then
+    return
+  fi
+
+  # Show information of the parent process recursively
+  mostrar_pares $parent_pid
+}
+
+# Show information of the current PID and its childs
+echo "INFO: pid, ppid i la comanda dels processos que s’han generat a partir d’aquesta shell"
+pstree -pah $(ps -o ppid= $$)
+
+# Show information of the current PID and its parents recursively
+echo "INFO: pid, ppid i la comanda dels processos pare que han generat a la shell"
+mostrar_pares $$
+
