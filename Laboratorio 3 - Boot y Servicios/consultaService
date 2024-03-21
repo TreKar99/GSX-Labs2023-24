@@ -1,0 +1,64 @@
+#!/bin/bash
+# Script for show info of packages
+# Author: Germán Puerto
+
+# Functionality of package management.
+pkgmanage(){
+	echo "PACKAGE: <$1>";
+        if [ ! -z "$(apt-cache show $1 2>/dev/null)" ]
+        then
+                echo "Version: "$(dpkg -l $1 | tail -1 | awk '{ print $3 }');
+                echo "Instalation date:  " $(zgrep 'install ' /var/log/dpkg.log* | sort | cut -f1,2,4 -d' ' | grep $1: | awk '{ print $1 " " $2 }');
+                update=$(grep $1 <<< "$updates")
+                if [ ! -z "$update" ]
+                then
+                        echo "Updates: $update"
+                fi
+                echo $(apt-cache depends $1 | grep Depèn | sed 's/Depèn/Depends/g'); 
+                echo "Config files: $(dpkg -L $1)" 
+        else
+                echo "NOT INSTALLED or NOT FOUND";
+        fi
+}
+
+# Check that haves params
+INFILE=/home/milax/LAB3/paquets
+OUTFILE=/home/milax/paquets.txt
+updates=$(apt list --upgradable 2>/dev/null)
+
+if [ $# -eq 0 ]
+then
+	# CASE 1: no params. Read from INFILE 
+	if [ ! -f "$INFILE" ]
+	then
+  		echo "ERROR: no file or params."
+  		exit 255
+	else
+		if [ -f "$OUTFILE" ]
+		then
+			rm $OUTFILE;
+		fi
+
+		touch $OUTFILE
+		echo "WARNING: No params. Trying to read $INFILE" >> $OUTFILE
+
+		for pkg in $(cat "$INFILE"); do
+    			pkgmanage $pkg >> $OUTFILE 
+		done
+	fi
+else 
+	# CASE 2: read from params of prompt.
+	for arg in "$@"; do
+		if [ -z $arg ]
+		then
+			echo "ERROR: incorrect params";
+			exit 255
+        	fi
+	done
+
+	for pkg in "$@"; do
+        	pkgmanage $pkg
+	done
+
+fi
+

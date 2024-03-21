@@ -1,0 +1,53 @@
+#!/bin/sh
+# Start/stop the consulta daemon.
+#
+### BEGIN INIT INFO
+# Provides:          consulta
+# Required-Start:    $remote_fs $syslog
+# Required-Stop:     $remote_fs $syslog
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: Regular background program processing daemon
+# Description:       consulta is a script for asking specs of a installed package.
+### END INIT INFO
+
+PATH=/bin:/usr/bin:/sbin:/usr/sbin
+DESC="consulta daemon"
+NAME=consultad
+DAEMON=/usr/sbin/consultaService
+PIDFILE=/var/run/consulta.pid
+SCRIPTNAME=/etc/init.d/"$NAME"
+
+# Checks if the daemon exists.
+#test -f $DAEMON || exit 0
+
+# For inicializing services.
+. /lib/lsb/init-functions
+
+# Read if exists a consulta config file
+[ -r /etc/default/consulta ] && . /etc/default/consulta
+
+
+case "$1" in
+start)	log_daemon_msg "Starting consulta" "consulta"
+        start_daemon -p $PIDFILE $DAEMON $EXTRA_OPTS
+        log_end_msg $?
+	;;
+stop)	log_daemon_msg "Stopping consulta" "consulta"
+        killproc -p $PIDFILE $DAEMON
+        RETVAL=$?
+        [ $RETVAL -eq 0 ] && [ -e "$PIDFILE" ] && rm -f $PIDFILE
+        log_end_msg $RETVAL
+        ;;
+restart) log_daemon_msg "Restarting consulta" "consulta" 
+        $0 stop
+        $0 start
+        ;;
+status)
+        status_of_proc -p $PIDFILE $DAEMON $NAME && exit 0 || exit $?
+        ;;
+*)	log_action_msg "Usage: /etc/init.d/sconsulta {start|stop|status|restart}"
+        exit 2
+        ;;
+esac
+exit 0

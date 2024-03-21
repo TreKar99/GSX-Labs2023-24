@@ -1,0 +1,9 @@
+[Unit]
+Description=Asks for managed packages.
+
+[Service]
+Type=simple
+ExecStart=/bin/bash /usr/sbin/consultad
+
+[Install]
+WantedBy=multi-user.target
