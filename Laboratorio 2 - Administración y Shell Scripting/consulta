@@ -1,0 +1,38 @@
+#!/bin/bash
+# Script for show info of packages
+# Author: Germán Puerto
+
+# Check that haves params
+if [ $# -eq 0 ]
+then
+        echo "ERROR: no params"
+        exit -1
+fi
+
+# Check that packages are valid  
+for arg in "$@"; do
+	if [ -z $arg ]
+	then echo "ERROR: incorrect params";
+	     exit -1
+	fi
+done
+
+updates=$(apt list --upgradable 2>/dev/null)
+
+for pkg in "$@"; do
+	echo "PACKAGE: $pkg";
+	if [ ! -z "$(apt-cache show $pkg 2>/dev/null)" ]
+	then 
+		echo "Version: "$(dpkg -l $pkg | tail -1 | awk '{ print $3 }');
+		echo "Instalation date:  " $(zgrep 'install ' /var/log/dpkg.log* | sort | cut -f1,2,4 -d' ' | grep $pkg: | awk '{ print $1 " " $2 }');
+		update=$(grep $pkg <<< "$updates")
+		if [ ! -z "$update" ]
+		then
+			echo "Updates: $update"
+		fi
+		echo $(apt-cache depends $pkg | grep Depèn | sed 's/Depèn/Depends/g'); 
+		echo "Config files: $(dpkg -L $pkg)" 
+	else
+		echo "NOT INSTALLED or NOT FOUND";
+	fi 
+done

@@ -1,0 +1,31 @@
+#!/bin/bash
+# Script for remove packages 
+# Author: Germán Puerto
+
+# Check that haves params
+if [ $# -eq 0 ]
+then
+	echo "ERROR: no params"
+	exit -1
+fi
+
+# Check that packages are valid
+for arg in "$@"; do
+	if [ -z $arg ]
+	then 
+		echo "ERROR: incorrect params";
+	  	exit -1
+	fi
+done
+
+for pkg in "$@"; do
+        echo "PACKAGE: $pkg";
+        if [ ! -z "$(apt-cache show $pkg 2>/dev/null)" ]
+        then
+		echo "Sudo execution for remove $pkg";
+		echo "COMMAND: sudo dpkg -r --force-depends $pkg";
+		sudo dpkg -r --force-depends $pkg
+	else
+		echo "NOT INSTALLED or NOT FOUND";
+	fi
+done
