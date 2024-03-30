@@ -4,6 +4,7 @@ ip link set eth1 up
 
 # Activar IPv4 forwarding de forma permanente
 cp sysctl.conf /etc/sysctl.conf
+echo 1 > /proc/sys/net/ipv4/ip_forward
 
 # Añadir server a /etc/hosts
 cp hosts /etc/hosts
