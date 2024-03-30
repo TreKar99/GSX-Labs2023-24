@@ -1,8 +1,0 @@
-auto lo
-iface lo inet loopback
-
-auto eth0
-iface eth0 inet static
-address 172.24.124.126
-netmask 255.255.255.128
-gateway 172.24.124.1
