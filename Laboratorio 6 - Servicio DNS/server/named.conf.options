@@ -1,0 +1,23 @@
+options {
+	# Directori de fitxers per defecte sigui a /var/cache/bind/
+	directory "/var/cache/bind";
+	
+	# Forwarding les consultes desconegudes cap al servidor DNS del ISP
+	forwarders { 8.8.8.8; };
+
+	# Aquests dns no els validarem
+	dnssec-validation no;
+
+	# Queries recursius permesos només per als nostres contenidors: useu una acl
+	recursion yes;
+	allow-recursion { lxc; };
+	allow-query { lxc; };
+
+	# Transferències de zona sols permeses des del localhost.
+	allow-transfer { localhost; };
+
+	auth-nxdomain no;
+	listen-on-v6 { none; };
+};
+
+acl lxc { 198.18.124.0/28; 172.24.124.0/25; };

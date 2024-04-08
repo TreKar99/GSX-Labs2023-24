@@ -1,0 +1,21 @@
+zone "intranet.gsx" {
+	type master;
+	file "intranet.gsx.db";
+};
+
+zone "dmz.gsx" {
+        type master;
+        file "dmz.gsx.db";
+};
+
+zone "124.18.198.in-addr.arpa" {
+	type master;
+	file "db.198";
+	notify no;
+};
+
+zone "124.24.172.in-addr.arpa" {
+	type master;
+	file "db.172";
+	notify no;
+};

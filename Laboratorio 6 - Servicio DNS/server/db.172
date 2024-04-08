@@ -1,0 +1,12 @@
+; file "db.172"
+$TTL	604800
+@		IN	SOA	ns.intranet.gsx.	root.ns.intranet.gsx.(
+					2			; Serial
+					604800		; Refresh
+					86400		; Retry
+					2419200		; Expire
+					604800	)	; Negative Cache TTL
+;
+@		IN	NS	ns.intranet.gsx.
+126		IN	PTR	dhcp.intranet.gsx.
+1		IN	PTR	router.intranet.gsx.
