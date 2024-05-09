@@ -1,0 +1,29 @@
+#!/bin/bash
+
+# Comprobar si se ha proporcionado un argumento
+if [ $# -eq 0 ]; then
+  echo "Error: Se requiere un archivo de texto como argumento."
+  exit 1
+fi
+
+# Obtener el nombre del archivo de texto
+archivo_txt=$1
+
+# Comprobar si el archivo existe
+if [ ! -f "$archivo_txt" ]; then
+  echo "Error: El archivo '$archivo_txt' no existe."
+  exit 1
+fi
+
+echo "INTRODUEIX LA PASSWORD PER IMPRIMIR: "
+stty -echo
+read pass
+
+if [ "$pass" == "siusplau" ]; then
+	/usr/bin/lp $archivo_txt
+
+else 
+	echo "INCORRECTA"
+fi
+
+stty echo
