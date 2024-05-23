@@ -1,0 +1,17 @@
+# Fitxer: dockerfile_gsx_prac7
+# vim: syntax=dockerfile
+
+FROM debian:buster-slim
+MAINTAINER Germán Puerto
+
+# Descargar paquetes
+RUN apt update
+RUN apt-get install -y --no-install-recommends initscripts  quagga-ripd iputils-ping traceroute
+RUN apt-get install -y --no-install-recommends iproute2 bind9-host iputils-ping ifupdown
+RUN apt-get install -y --no-install-recommends dnsutils ifupdown iptables isc-dhcp-client nano procps tcpdump
+
+ADD ./prac7_config_rip.sh /root
+ADD ./ripd.conf /root
+ADD ./ripd.conf.r1 /root
+
+CMD [ "/bin/bash" ]

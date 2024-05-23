@@ -1,0 +1,15 @@
+router rip
+ version 2
+ network 10.124.1.0/30
+ network link1_veth1
+ network link1_veth2
+ network 10.124.2.0/30
+ network link2_veth1
+ network link2_veth2
+ network 10.124.3.0/30
+ network link3_veth1
+ network link3_veth2
+ network 10.124.4.0/30
+ network link4_veth1
+ network link4_veth2
+
